@@ -23,13 +23,23 @@ const persons = [
 ]
 
 
-// test route 
+// test route (will be to index.html in future)
 app.get('/', (req,res) => {
     res.send('<h1>Its working</h1>')
 })
-
+// Route for info page
+app.get('/info', (req,res) => {
+    const noOfPersons = persons.length;
+    const date = new Date();
+    res.send(`<p>Phonebook has infor for ${noOfPersons} people</br></br> ${date}<p>`)
+})
+// route to full data
 app.get('/api/persons', (req, res) => {
     res.json(persons)
+})
+app.get('/api/persons/:id', (req,res) => {
+    const id = Number(req.params.id)
+    const person = persons.find(person => person.id === id)
 })
 
 

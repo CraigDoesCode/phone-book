@@ -9,12 +9,12 @@ const persons = [
         id: 1,
         name: 'Atro Hellas',
         number: '040-123456'
-    }
+    },
     {
         id: 2,
         name: 'Ada Lovelace',
         number: '39-44-5323532'
-    }
+    },
     {
         id: 1,
         name: 'Mary Poppendick',

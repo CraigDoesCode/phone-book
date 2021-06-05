@@ -75,7 +75,8 @@ app.post('/api/persons', (req,res) => {
         })
     }
     //check if name already exist
-    for (let person in persons){
+    for (const person of persons){
+        //console.log(person)
         if (person.name === body.name){
             return res.status(400).json({
                 error: 'Name already exists'

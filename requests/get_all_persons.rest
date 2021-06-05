@@ -29,7 +29,7 @@ content-type: application/json
     "number": "07907452352"
 }
 
-### missing name and numer post
+### missing name and number post
 
 POST http://localhost:3000/api/persons
 content-type: application/json

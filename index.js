@@ -1,7 +1,10 @@
 //import express
+const { response } = require('express')
 const express = require('express')
 //create express app
 const app = express()
+
+app.use(express.json())
 
 //store data
 let persons = [
@@ -50,7 +53,33 @@ app.delete('/api/persons/:id', (req, res) => {
 
     res.status(204).end()
 })
-// route 
+
+// Generate unique ID number
+const generateId = () => {
+    id = Math.floor(Math.random()*10000)
+    for (const person in persons){
+        if (person.id === id){
+            return generateId
+        }
+    }
+    return id;
+}
+
+// route to post items
+app.post('/api/persons', (req,res) => {
+    const body = req.body
+    console.log(body)
+    const newPerson = {
+        id: generateId(),
+        name: body.name,
+        number: body.number
+    }
+    console.log(newPerson);
+    persons = persons.concat(newPerson)
+
+    res.json(newPerson)
+
+})
 
 
 const PORT = 3000;

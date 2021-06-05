@@ -1,13 +1,39 @@
+### simple get
 GET http://localhost:3000/api/persons
 
-###
+### simple delete
 DELETE http://localhost:3000/api/persons/1
 
-###
+### simple post 
 POST http://localhost:3000/api/persons
 content-type: application/json
 
 {
     "name": "craig norford",
     "number": "07907452352"
+}
+
+### Missing num post
+
+POST http://localhost:3000/api/persons
+content-type: application/json
+
+{
+    "name": "craig norford"
+}
+### missing name post
+POST http://localhost:3000/api/persons
+content-type: application/json
+
+{
+    "number": "07907452352"
+}
+
+### missing name and numer post
+
+POST http://localhost:3000/api/persons
+content-type: application/json
+
+{
+    
 }

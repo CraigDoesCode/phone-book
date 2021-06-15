@@ -6,6 +6,23 @@ const app = express()
 
 app.use(express.json())
 
+// Middleware - log all requests
+/*const requestLogger = (request, response, next) => {
+    console.log('Method:', request.method)
+    console.log('Path:  ', request.path)
+    console.log('Body:  ', request.body)
+    console.log('---')
+    next()
+}
+app.use(requestLogger)*/
+
+// import morgan request logger
+
+const morgan = require('morgan')
+
+morgan.token('person', (req, res) => {return JSON.stringify(req.body)})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person'))
+
 //store data
 let persons = [
     {
@@ -44,7 +61,12 @@ app.get('/api/persons', (req, res) => {
 app.get('/api/persons/:id', (req,res) => {
     const id = Number(req.params.id)
     const person = persons.find(person => person.id === id)
-    res.json(person)
+
+    if (person){
+        res.json(person)
+    } else {
+        res.status(404).end()
+    }
 })
 // route to delete items
 app.delete('/api/persons/:id', (req, res) => {
@@ -53,6 +75,7 @@ app.delete('/api/persons/:id', (req, res) => {
 
     res.status(204).end()
 })
+
 
 // Generate unique ID number
 const generateId = () => {
@@ -95,6 +118,13 @@ app.post('/api/persons', (req,res) => {
     res.json(newPerson)
 
 })
+
+ //Middleware -  
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+  }
+  
+  app.use(unknownEndpoint)
 
 
 const PORT = 3000;

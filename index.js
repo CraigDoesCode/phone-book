@@ -20,7 +20,7 @@ app.use(requestLogger)*/
 
 const morgan = require('morgan')
 
-morgan.token('person', (req, res) => {return JSON.stringify(req.body)})
+morgan.token('person', (request, response) => {return JSON.stringify(request.body)})
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person'))
 
 //store data
@@ -28,52 +28,55 @@ let persons = [
     {
         id: 1,
         name: 'Atro Hellas',
-        number: '040-123456'
+        number: '040-123456',
+        quantity: 9
     },
     {
         id: 2,
         name: 'Ada Lovelace',
-        number: '39-44-5323532'
+        number: '39-44-5323532',
+        quantity: 6
     },
     {
         id: 3,
         name: 'Mary Poppendick',
-        number: '39-23-6423122'
+        number: '39-23-6423122',
+        quantity: 7
     }
 ]
 
 
 // test route (will be to index.html in future)
-app.get('/', (req,res) => {
-    res.send('<h1>Its working</h1>')
+app.get('/', (request,response) => {
+    response.send('<h1>Its working</h1>')
 })
-// Route for info page
-app.get('/info', (req,res) => {
+// Route for info page 
+app.get('/info', (request,response) => {
     const noOfPersons = persons.length;
     const date = new Date();
-    res.send(`<p>Phonebook has info for ${noOfPersons} people</br></br> ${date}<p>`)
+    response.send(`<p>Phonebook has info for ${noOfPersons} people</br></br> ${date}<p>`)
 })
 // route to full data
-app.get('/api/persons', (req, res) => {
-    res.json(persons)
+app.get('/api/persons', (request, response) => {
+    response.json(persons)
 })
 // route for individual elements
-app.get('/api/persons/:id', (req,res) => {
-    const id = Number(req.params.id)
+app.get('/api/persons/:id', (request,response) => {
+    const id = Number(request.params.id)
     const person = persons.find(person => person.id === id)
 
     if (person){
-        res.json(person)
+        response.json(person)
     } else {
-        res.status(404).end()
+        response.status(404).end()
     }
 })
 // route to delete items
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
     persons = persons.filter(person => person.id !== id)
 
-    res.status(204).end()
+    response.status(204).end()
 })
 
 
@@ -89,11 +92,11 @@ const generateId = () => {
 }
 
 // route to post items
-app.post('/api/persons', (req,res) => {
-    const body = req.body
+app.post('/api/persons', (request,response) => {
+    const body = request.body
     // input error handling
     if (!body.name || !body.number){
-        return res.status(400).json({
+        return response.status(400).json({
             error: `${!body.name ? !body.number ? 'Person must have a name and number': 'person must have a name' : 'person must have a number'}`
         })
     }
@@ -101,7 +104,7 @@ app.post('/api/persons', (req,res) => {
     for (const person of persons){
         //console.log(person)
         if (person.name === body.name){
-            return res.status(400).json({
+            return response.status(400).json({
                 error: 'Name already exists'
             })        
         }
@@ -115,7 +118,27 @@ app.post('/api/persons', (req,res) => {
     //console.log(newPerson);
     persons = persons.concat(newPerson)
 
-    res.json(newPerson)
+    response.json(newPerson)
+
+})
+
+// route to update items
+
+app.put('/api/persons', (request, response) => {
+    const body = request.body
+    const id = Number(body.id)
+    const numSold = body.numSold
+    console.log("ID:", id)
+    for(const person of persons){
+        console.log('person:', person.id)
+        if (person.id === id){
+            console.log('before:', person)
+            person.quantity = person.quantity - numSold
+            console.log('After:', person)
+            break
+        }
+    }
+    response.send('this is an update')
 
 })
 
